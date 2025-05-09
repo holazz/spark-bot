@@ -32,7 +32,10 @@ async function run() {
     process.exit(0)
   }
 
-  const hash = await retry(getLatestDepositTxId.bind(wallet), Number.MAX_SAFE_INTEGER)(depositAddress)
+  let hash
+  while (!hash) {
+    hash = await retry(getLatestDepositTxId.bind(wallet), Number.MAX_SAFE_INTEGER)(depositAddress)
+  }
   console.log(c.bold(`存款哈希: ${c.green(hash)}\n`))
 
   try {
