@@ -14,6 +14,12 @@ pnpm i
 pnpm run deposit
 ```
 
+### 提款
+
+```bash
+pnpm run withdraw
+```
+
 ### 查询余额
 
 ```bash
