@@ -6,7 +6,7 @@ import { initWallet, retry } from '../utils'
 async function run() {
   const { wallet } = await initWallet(process.env.MNEMONIC!)
 
-  const { onchainAddress, amountSats, exitSpeed } = await prompts([
+  let { onchainAddress, amountSats, exitSpeed } = await prompts([
     {
       type: 'text',
       name: 'onchainAddress',
@@ -28,6 +28,11 @@ async function run() {
       ],
     },
   ])
+
+  if (!amountSats) {
+    const { balance } = await retry(wallet.getBalance.bind(wallet), Number.MAX_SAFE_INTEGER)()
+    amountSats = balance
+  }
 
   console.log()
   console.log(c.bold(c.yellow('提现地址:')), c.green(onchainAddress))
