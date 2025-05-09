@@ -1,5 +1,6 @@
 import fsp from 'node:fs/promises'
 import process from 'node:process'
+import { getLatestDepositTxId } from '@buildonspark/spark-sdk'
 import { generateMnemonic } from '@scure/bip39'
 import { wordlist } from '@scure/bip39/wordlists/english'
 import c from 'picocolors'
@@ -14,11 +15,25 @@ async function run() {
   console.log(c.bold(`助记词(请妥善保管): ${c.yellow(mnemonic)}\n`))
   console.log(c.bold(`存款地址: ${c.green(depositAddress)}\n`))
 
-  const { hash } = await prompts({
-    type: 'text',
-    name: 'hash',
-    message: '请输入存款哈希:',
+  // const { hash } = await prompts({
+  //   type: 'text',
+  //   name: 'hash',
+  //   message: '请输入存款哈希:',
+  // })
+
+  const { value } = await prompts({
+    type: 'confirm',
+    name: 'value',
+    message: '是否存款完成?',
+    initial: true,
   })
+
+  if (!value) {
+    process.exit(0)
+  }
+
+  const hash = await retry(getLatestDepositTxId.bind(wallet), Number.MAX_SAFE_INTEGER)(depositAddress)
+  console.log(c.bold(`存款哈希: ${c.green(hash)}\n`))
 
   try {
     await fsp.access('data')
@@ -32,7 +47,7 @@ async function run() {
   const updatedWallets = [...wallets, { mnemonic, address: depositAddress, hash }]
   await fsp.writeFile('data/wallets.json', `${JSON.stringify(updatedWallets, null, 2)}\n`, 'utf-8')
 
-  const tx = await retry(wallet.claimDeposit.bind(wallet), Number.MAX_SAFE_INTEGER)(hash)
+  const tx = await retry(wallet.claimDeposit.bind(wallet), Number.MAX_SAFE_INTEGER)(hash!)
   console.log('\nTransaction:', tx)
 
   // Update .env
