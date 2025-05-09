@@ -1,11 +1,10 @@
-import process from 'node:process'
 import { SparkWallet } from '@buildonspark/spark-sdk'
 import c from 'picocolors'
 import 'dotenv/config'
 
-export async function initWallet() {
-  const { wallet, mnemonic } = await SparkWallet.initialize({
-    mnemonicOrSeed: process.env.MNEMONIC,
+export async function initWallet(mnemonic: string) {
+  const { wallet } = await SparkWallet.initialize({
+    mnemonicOrSeed: mnemonic,
     options: {
       network: 'MAINNET',
     },

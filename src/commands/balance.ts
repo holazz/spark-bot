@@ -3,7 +3,7 @@ import c from 'picocolors'
 import { initWallet, retry } from '../utils'
 
 async function run() {
-  const { wallet } = await initWallet()
+  const { wallet } = await initWallet(process.env.MNEMONIC!)
 
   const balances = await retry(wallet.getBalance.bind(wallet), Number.MAX_SAFE_INTEGER)()
   console.log(c.bold(c.yellow('\nBalances:')))

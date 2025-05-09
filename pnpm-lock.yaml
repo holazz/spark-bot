@@ -11,6 +11,9 @@ importers:
       '@buildonspark/spark-sdk':
         specifier: ^0.1.13
         version: 0.1.13(ws@8.18.2)
+      '@scure/bip39':
+        specifier: ^1.6.0
+        version: 1.6.0
       dayjs:
         specifier: ^1.11.13
         version: 1.11.13

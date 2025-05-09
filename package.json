@@ -6,11 +6,13 @@
     "deposit": "tsx src/commands/deposit.ts",
     "balance": "tsx src/commands/balance.ts",
     "send": "tsx src/commands/send.ts",
+    "withdraw": "tsx src/commands/withdraw.ts",
     "lint": "eslint .",
     "postinstall": "tsx scripts/postinstall.ts"
   },
   "dependencies": {
     "@buildonspark/spark-sdk": "^0.1.13",
+    "@scure/bip39": "^1.6.0",
     "dayjs": "^1.11.13",
     "dotenv": "^16.5.0",
     "p-limit": "^6.2.0",

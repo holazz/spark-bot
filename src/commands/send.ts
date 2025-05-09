@@ -5,7 +5,7 @@ import { initWallet, retry } from '../utils'
 async function run() {
   const argv = process.argv.slice(2)
   const count = Number(argv[0]) || 1
-  const { wallet } = await initWallet()
+  const { wallet } = await initWallet(process.env.MNEMONIC!)
 
   for (let i = 0; i < count; i++) {
     const transfer = await retry(
