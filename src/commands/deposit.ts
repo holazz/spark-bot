@@ -5,7 +5,7 @@ import { generateMnemonic } from '@scure/bip39'
 import { wordlist } from '@scure/bip39/wordlists/english'
 import c from 'picocolors'
 import prompts from 'prompts'
-import { initWallet, retry } from '../utils'
+import { initWallet, retry, sleep } from '../utils'
 
 async function run() {
   const mnemonic = generateMnemonic(wordlist, 128)
@@ -14,12 +14,6 @@ async function run() {
   const depositAddress = await wallet.getSingleUseDepositAddress()
   console.log(c.bold(`助记词(请妥善保管): ${c.yellow(mnemonic)}\n`))
   console.log(c.bold(`存款地址: ${c.green(depositAddress)}\n`))
-
-  // const { hash } = await prompts({
-  //   type: 'text',
-  //   name: 'hash',
-  //   message: '请输入存款哈希:',
-  // })
 
   const { value } = await prompts({
     type: 'confirm',
@@ -33,15 +27,23 @@ async function run() {
   }
 
   let hash
+  await sleep(2000)
   while (!hash) {
-    hash = await retry(getLatestDepositTxId.bind(wallet), Number.MAX_SAFE_INTEGER)(depositAddress)
+    try {
+      hash = await retry(getLatestDepositTxId.bind(wallet), 5)(depositAddress)
+    } catch {
+      ;({ hash } = await prompts({
+        type: 'text',
+        name: 'hash',
+        message: '尝试获取存款哈希失败，请手动输入:',
+      }))
+    }
   }
   console.log(c.bold(`存款哈希: ${c.green(hash)}\n`))
 
   try {
     await fsp.access('data')
-  }
-  catch {
+  } catch {
     await fsp.mkdir('data', { recursive: true })
   }
 
