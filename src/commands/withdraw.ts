@@ -31,7 +31,7 @@ async function run() {
 
   if (!amountSats) {
     const { balance } = await retry(wallet.getBalance.bind(wallet), Number.MAX_SAFE_INTEGER)()
-    amountSats = balance
+    amountSats = Number(balance)
   }
 
   console.log()
