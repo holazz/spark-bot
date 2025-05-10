@@ -5,7 +5,7 @@ import { generateMnemonic } from '@scure/bip39'
 import { wordlist } from '@scure/bip39/wordlists/english'
 import c from 'picocolors'
 import prompts from 'prompts'
-import { initWallet, retry, sleep } from '../utils'
+import { initWallet, retry } from '../utils'
 
 async function run() {
   const mnemonic = generateMnemonic(wordlist, 128)
@@ -27,11 +27,11 @@ async function run() {
   }
 
   let hash
-  await sleep(2000)
   while (!hash) {
     try {
       hash = await retry(getLatestDepositTxId.bind(wallet), 3)(depositAddress)
-    } catch {
+    }
+    catch {
       ;({ hash } = await prompts({
         type: 'text',
         name: 'hash',
@@ -43,7 +43,8 @@ async function run() {
 
   try {
     await fsp.access('data')
-  } catch {
+  }
+  catch {
     await fsp.mkdir('data', { recursive: true })
   }
 
