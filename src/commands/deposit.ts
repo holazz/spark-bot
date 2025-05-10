@@ -30,7 +30,7 @@ async function run() {
   await sleep(2000)
   while (!hash) {
     try {
-      hash = await retry(getLatestDepositTxId.bind(wallet), 5)(depositAddress)
+      hash = await retry(getLatestDepositTxId.bind(wallet), 3)(depositAddress)
     } catch {
       ;({ hash } = await prompts({
         type: 'text',
